@@ -1,0 +1,79 @@
+//
+//  CommandService用のParam型とResult型を定義したprotoファイル
+//
+
+// ライセンスヘッダ:バージョン3を利用
+syntax = "proto3"; 
+// 生成コードの格納先パッケージを指定
+option go_package = "/pb";
+
+// error.protoのインポート
+import "proto/error.proto";
+// models.protoのインポート
+import "proto/models.proto";
+
+// google/protobufモジュールのデータ型をインポート
+import "google/protobuf/timestamp.proto";
+
+// パッケージの宣言
+package proto;
+
+// 更新の種類
+enum CRUD {
+    UNKNOWN = 0;    // 不明
+    INSERT  = 1;    // 追加
+    UPDATE  = 2;    // 変更
+    DELETE  = 3;    // 削除
+}
+
+//*****************************************
+// 商品カテゴリ更新用param型とResult型の定義
+//*****************************************
+//  商品カテゴリ更新Param型
+message CategoryUpParam {
+    CRUD   crud    = 1; // 更新の種類
+    string id      = 2; // 商品カテゴリ番号
+    string name    = 3; // 商品カテゴリ名
+}
+//  商品更新Param型
+message ProductUpParam {
+    CRUD   crud        = 1; // 更新の種類
+    string id          = 2; // 商品番号
+    string name        = 3; // 商品名
+    int32  price       = 4; // 単価
+    string categoryId  = 5; // 商品カテゴリ番号
+}
+//  商品カテゴリ更新Result型
+message CategoryUpResult {
+    Category   category    = 1; // 更新結果
+    Error      error       = 2; // 更新エラー
+    google.protobuf.Timestamp timestamp = 3;    // タイムスタンプ
+}
+//  商品更新Result型
+message ProductUpResult {
+    Product product    = 1;   // 更新結果
+    Error  error       = 2;   // 更新エラー
+    google.protobuf.Timestamp timestamp = 3;    // タイムスタンプ
+}
+
+//*****************************************
+// 商品カテゴリと商品の更新サービス型の定義
+//*****************************************
+//  商品カテゴリ更新サービス型
+service CategoryCommand {
+    // 商品カテゴリを追加した結果を返す
+    rpc Create(CategoryUpParam) returns(CategoryUpResult);
+    // 商品カテゴリを更新した結果を返す
+    rpc Update(CategoryUpParam) returns(CategoryUpResult);
+    // 商品カテゴリを削除した結果を返す
+    rpc Delete(CategoryUpParam) returns(CategoryUpResult);
+}
+//  商品更新サービス型
+service ProductCommand {
+    // 商品カテゴリを追加した結果を返す
+    rpc Create(ProductUpParam) returns(ProductUpResult);
+    // 商品カテゴリを更新した結果を返す
+    rpc Update(ProductUpParam) returns(ProductUpResult);
+    // 商品カテゴリを削除した結果を返す
+    rpc Delete(ProductUpParam) returns(ProductUpResult);
+}
